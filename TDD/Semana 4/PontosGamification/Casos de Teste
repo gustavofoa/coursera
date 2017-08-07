@@ -1,0 +1,18 @@
+Casos de Teste da classe Armazenamento:
+
+(X) CT01 - Armazenar X pontos do tipo Y para o usuário Z
+(X) CT02 - Recuperar quantidade de pontos do tipo X para o usuário Y
+(X) CT03 - Listar usuários que já receberam algum tipo de ponto
+(X) CT04 - Listar os tipos de ponto que já foram registrados para o usuário X
+
+Casos de Teste da classe Placar:
+
+(X) CT01 - Registrar X pontos do tipo Y para o usuário Z
+(X) CT02 - Obter pontos do Usuário X (Retornar um Map<String, Integer>)
+(X) CT03 - Obter ranking do tipo de pontos X
+
+Casos de Teste de Integração
+
+(X) CT01 - Registrar X pontos do tipo Y para o usuário Z no arquivo de armazenamento. (Arquivo vazio)
+(X) CT02 - Registrar X pontos do tipo Y para o usuário Z no arquivo de armazenamento. (Arquivo com dados)
+(X) CT03 - Obter do arquivo de armazenamento os pontos do Usuário X
