@@ -1,0 +1,20 @@
+<dataset>
+	<usuario 
+		login="gustavo"
+		email="gustavo@gmail.com"
+		nome="Gustavo"
+		senha="gustavo1"
+		pontos="2" />
+	<usuario 
+		login="daiana"
+		email="daiana@gmail.com"
+		nome="Daiana"
+		senha="daiana1"
+		pontos="6" />
+	<usuario 
+		login="wellington"
+		email="wellington@gmail.com"
+		nome="Wellington"
+		senha="wellington1"
+		pontos="3" />
+</dataset>

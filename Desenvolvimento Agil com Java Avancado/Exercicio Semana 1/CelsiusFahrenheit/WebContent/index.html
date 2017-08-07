@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<title>Conversão Celsius / Fahrenheit</title>
+	</head>
+	<body>
+		<h1>Conversão Celsius / Fahrenheit</h1>
+		<form method="GET" action="ConversorServlet">
+			<div>
+			<label>
+				Tipo de conversão:
+			</label>
+			<select id="type" name="type">
+				<option value="CelsiusToFahrenheit">Celsius para Fahrenheit</option>
+				<option value="FahrenheitToCelsius">Fahrenheit para Celsius</option>
+			</select>
+			</div>
+			<div>
+			<label>Valor para conversão:</label>
+			<input name="value" type="text" />
+			</div>
+			<input type="submit" value="Converter!">
+		</form>
+	</body>
+</html>
