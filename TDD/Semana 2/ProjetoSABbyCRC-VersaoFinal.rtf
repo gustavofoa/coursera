@@ -1,0 +1,1036 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf510
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red127\green0\blue85;\red0\green0\blue192;\red42\green0\blue255;
+\red63\green127\blue95;\red100\green100\blue100;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww21200\viewh12420\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\b\fs36 \cf0 Projeto SAB pelo CRC Modeling
+\b0\fs24 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 C\'f3digo de Produ\'e7\'e3o da Vers\'e3o Preliminar\ul \
+\
+\pard\pardeftab720
+
+\f1\b0\fs22 \cf2 \ulnone package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\cf2 import\cf0  java.util.HashSet;\
+\cf2 import\cf0  java.util.Iterator;\
+\cf2 import\cf0  java.util.TreeSet;\
+\
+\cf2 public\cf0  \cf2 class\cf0  Biblioteca \{\
+\
+	\cf2 public\cf0  Biblioteca(String nome) \{\
+		\cf3 _nome\cf0  = nome;\
+		\cf3 _repositorioLivros\cf0  = \cf2 new\cf0  TreeSet<Livro>();\
+		\cf3 _usuarios\cf0  = \cf2 new\cf0  HashSet<Usuario>();\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  adicionaLivroCatalogo(Livro livro)\
+			\cf2 throws\cf0  AdicionarLivroInexistenteException \{\
+		\cf2 if\cf0  (livro != \cf2 null\cf0 ) \{\
+			livro.setNrCatalogo(\cf2 this\cf0 .getNrUnico());\
+			\cf3 _repositorioLivros\cf0 .add(livro);\
+		\} \cf2 else\cf0 \
+			\cf2 throw\cf0  \cf2 new\cf0  AdicionarLivroInexistenteException(\
+					\cf4 "--->N\'e3o pode adicionar livro inexistente!"\cf0 );\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  registraUsuario(String nome)\
+\pard\pardeftab720
+\cf0 			\cf2 throws\cf0  UsuarioJaRegistradoException, UsuarioComNomeVazioException,\
+			UsuarioInexistenteException \{\
+		\cf2 if\cf0  (nome != \cf2 null\cf0 ) \{\
+			\cf2 if\cf0  (!nome.isEmpty()) \{\
+				Usuario usuario = \cf2 new\cf0  Usuario(nome);\
+				\cf2 if\cf0  (!\cf3 _usuarios\cf0 .contains(usuario)) \{\
+					\cf3 _usuarios\cf0 .add(usuario);\
+				\} \cf2 else\cf0 \
+					\cf2 throw\cf0  \cf2 new\cf0  UsuarioJaRegistradoException(\cf4 "--->J\'e1 existe usu\'e1rio com o nome \\""\cf0 \
+							+ nome + \cf4 "\\"! Use outro nome!"\cf0 );\
+			\} \cf2 else\cf0 \
+				\cf2 throw\cf0  \cf2 new\cf0  UsuarioComNomeVazioException(\cf4 "--->N\'e3o pode registrar usuario com nome vazio!"\cf0 );\
+		\} \cf2 else\cf0 \
+			\cf2 throw\cf0  \cf2 new\cf0  UsuarioInexistenteException(\cf4 "--->N\'e3o pode registrar usuario inexistente!"\cf0 );\
+	\}\
+\pard\pardeftab720
+\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  emprestaLivro(Livro livro, Usuario usuario)\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException\{\
+		\cf2 if\cf0  ((livro == \cf2 null\cf0 ) && (usuario == \cf2 null\cf0 ))\
+			\cf2 throw\cf0  \cf2 new\cf0  LivroOuUsuarioNulosException(\cf4 "--->Livro e Usu\'e1rio inexistentes!"\cf0 );\
+		\cf2 if\cf0  (livro != \cf2 null\cf0 ) \{\
+			\cf2 if\cf0  (usuario != \cf2 null\cf0 ) \{\
+				\cf2 if\cf0  (livro.getUsuario() == \cf2 null\cf0 ) \{\
+					usuario.anexaLivroAoUsuario(livro);\
+					livro.anexaUsuarioAoLivro(usuario);\
+				\} \cf2 else\cf0 \
+					\cf2 throw\cf0  \cf2 new\cf0  LivroIndisponivelParaEmprestimoException(\cf4 "--->Livro "\cf0  + livro\
+							+ \cf4 " indispon\'edvel para empr\'e9stimo!"\cf0 );\
+			\} \cf2 else\cf0 \
+				\cf2 throw\cf0  \cf2 new\cf0  LivroOuUsuarioNulosException(\cf4 "--->Usu\'e1rio inexistente!"\cf0 );\
+		\} \cf2 else\cf0 \
+			\cf2 throw\cf0  \cf2 new\cf0  LivroOuUsuarioNulosException(\cf4 "--->N\'e3o pode emprestar livro inexistente!"\cf0 );\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  devolveLivro(Livro livro)\
+			\cf2 throws\cf0  DevolveLivroDisponivelParaEmprestimoException, DevolveLivroNuloParaEmprestimoException \{\
+		\cf2 if\cf0  (livro != \cf2 null\cf0 ) \{\
+			Usuario usuario = livro.getUsuario();\
+			\cf2 if\cf0  (usuario != \cf2 null\cf0 ) \{\
+				usuario.desanexaLivroDoUsuario(livro);\
+				livro.desanexaUsuarioDoLivro();\
+			\} \cf2 else\cf0 \
+				\cf2 throw\cf0  \cf2 new\cf0  DevolveLivroDisponivelParaEmprestimoException(\cf4 "---> Tentou devolver livro "\cf0  + livro\
+						+ \cf4 " que est\'e1 dispon\'edvel para empr\'e9stimo!"\cf0 );\
+		\} \cf2 else\cf0 \
+			\cf2 throw\cf0  \cf2 new\cf0  DevolveLivroNuloParaEmprestimoException(\cf4 "--->N\'e3o pode emprestar livro inexistente!"\cf0 );\
+	\}\
+\
+	\cf2 public\cf0  Livro buscaLivroPorNrCatalogo(\cf2 int\cf0  nrUnico) \{\
+		\cf5 // nrUnico <= zero \ul devolve\ulnone  \ul nulo\ulnone : \ul n\'e3o\ulnone  \ul encontrou\ulnone  \ul livro\ulnone  \ul algum\ulnone !\cf0 \
+		Livro livroAchado = \cf2 null\cf0 ;\
+		Iterator<Livro> iter = \cf3 _repositorioLivros\cf0 .iterator();\
+		\cf2 while\cf0  ((iter.hasNext() == \cf2 true\cf0 ) && (livroAchado == \cf2 null\cf0 )) \{\
+			Livro livro = (Livro) iter.next();\
+			\cf2 int\cf0  oNrUnico = livro.getNrCatalogo();\
+			\cf2 if\cf0  (oNrUnico == nrUnico)\
+				livroAchado = livro;\
+		\}\
+		\cf2 return\cf0  livroAchado;\
+	\}\
+\
+	\cf2 public\cf0  Livro buscaLivroPorTituloAutor(String titulo, String autor)\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		Livro livroAchado = \cf2 null\cf0 ;\
+		\cf2 if\cf0  ((titulo != \cf2 null\cf0 ) && (autor != \cf2 null\cf0 )) \{\
+			\cf2 if\cf0  (!titulo.isEmpty() && !autor.isEmpty()) \{\
+				Iterator<Livro> iter = \cf3 _repositorioLivros\cf0 .iterator();\
+				\cf2 while\cf0  ((iter.hasNext() == \cf2 true\cf0 ) && (livroAchado == \cf2 null\cf0 )) \{\
+					Livro livro = (Livro) iter.next();\
+					String oTitulo = livro.getTitulo();\
+					String oAutor = livro.getAutor();\
+					\cf2 if\cf0  ((oTitulo.equals(titulo)) && (oAutor.equals(autor))) \{\
+						livroAchado = livro;\
+					\}\
+				\}\
+			\} \cf2 else\cf0 \
+				\cf2 throw\cf0  \cf2 new\cf0  TituloOuAutorVazioException (\cf4 "--->Nome do titulo e/ou do autor \'e9(s\'e3o) vazio(s)<<<"\cf0 );\
+		\} \cf2 else\cf0 \
+			\cf2 throw\cf0  \cf2 new\cf0  TituloOuAutorNuloException(\cf4 "--->Nome do titulo e/ou do autor \'e9(s\'e3o) nulo(s)<<<"\cf0 );\
+		\cf2 return\cf0  livroAchado;\
+	\}\
+\
+	\cf2 public\cf0  Usuario buscaUsuarioPorNome(String nome)\
+			\cf2 throws\cf0  BuscaUsuarioComNomeVazioException, BuscaUsuarioComNomeNuloException \{\
+		Usuario usuarioAchado = \cf2 null\cf0 ;\
+		\cf2 if\cf0  ((nome != \cf2 null\cf0 )) \{\
+			\cf2 if\cf0  (!nome.isEmpty()) \{\
+				Iterator<Usuario> iter = \cf3 _usuarios\cf0 .iterator();\
+				\cf2 while\cf0  ((iter.hasNext() == \cf2 true\cf0 ) && (usuarioAchado == \cf2 null\cf0 )) \{\
+					Usuario usuario = (Usuario) iter.next();\
+					String oNome = usuario.getNome();\
+					\cf2 if\cf0  (oNome == nome) \{\
+						usuarioAchado = usuario;\
+					\}\
+				\}\
+			\} \cf2 else\cf0 \
+				\cf2 throw\cf0  \cf2 new\cf0  BuscaUsuarioComNomeVazioException(\cf4 "--->Nome do usu\'e1rio \'e9 vazio<<<"\cf0 );\
+		\} \cf2 else\cf0 \
+			\cf2 throw\cf0  \cf2 new\cf0  BuscaUsuarioComNomeNuloException(\cf4 "--->Nome do usu\'e1rio \'e9 nulo<<<"\cf0 );\
+		\cf2 return\cf0  usuarioAchado;\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  exibeLivrosDispon\'edveis() \{\
+		System.\cf3 out\cf0 .println(\cf4 "Biblioteca: "\cf0  + \cf3 _nome\cf0 );\
+		System.\cf3 out\cf0 .println(\cf4 ">>>Livros Dispon\'edveis para Empr\'e9stimo<<<"\cf0 );\
+		\cf2 if\cf0  (\cf3 _repositorioLivros\cf0 .size() != 0) \{\
+			Iterator<Livro> iter = \cf3 _repositorioLivros\cf0 .iterator();\
+			\cf2 while\cf0  (iter.hasNext() == \cf2 true\cf0 ) \{\
+				Livro livro = (Livro) iter.next();\
+				\cf2 if\cf0  (livro.getUsuario() == \cf2 null\cf0 ) \{\
+					livro.exibe();\
+				\}\
+			\}\
+		\} \cf2 else\cf0 \
+			System.\cf3 out\cf0 .println(\cf4 "---> Nenhum livro no reposit\'f3rio"\cf0 );\
+		System.\cf3 out\cf0 .println(\cf4 "<<< Livros Dispon\'edveis >>>"\cf0 );\
+		System.\cf3 out\cf0 .println();\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  exibeLivrosEmprestados() \{\
+		System.\cf3 out\cf0 .println(\cf4 "Biblioteca: "\cf0  + \cf3 _nome\cf0 );\
+		System.\cf3 out\cf0 .println(\cf4 ">>>Livros Emprestados<<<"\cf0 );\
+		\cf2 if\cf0  (\cf3 _repositorioLivros\cf0 .size() != 0) \{\
+			Iterator<Livro> iter = \cf3 _repositorioLivros\cf0 .iterator();\
+			\cf2 while\cf0  (iter.hasNext() == \cf2 true\cf0 ) \{\
+				Livro livro = (Livro) iter.next();\
+				\cf2 if\cf0  (livro.getUsuario() != \cf2 null\cf0 ) \{\
+					System.\cf3 out\cf0 .println(\cf4 "\\t\\t"\cf0 \
+							+ \cf4 "--------------------------------------------"\cf0 );\
+					livro.exibe();\
+				\}\
+			\}\
+		\} \cf2 else\cf0 \
+			System.\cf3 out\cf0 .println(\cf4 "---> Nenhum livro no reposit\'f3rio"\cf0 );\
+		System.\cf3 out\cf0 .println(\cf4 "<<< Livros Emprestados >>>"\cf0 );\
+		System.\cf3 out\cf0 .println();\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  exibeUsuarios() \{\
+		System.\cf3 out\cf0 .println(\cf4 "Biblioteca: "\cf0  + \cf3 _nome\cf0 );\
+		System.\cf3 out\cf0 .println(\cf4 ">>>Usu\'e1rios da Biblioteca<<<"\cf0 );\
+		\cf2 if\cf0  (\cf3 _usuarios\cf0 .size() != 0) \{\
+			Iterator<Usuario> iter = \cf3 _usuarios\cf0 .iterator();\
+			\cf2 while\cf0  (iter.hasNext() == \cf2 true\cf0 ) \{\
+				Usuario usuario = (Usuario) iter.next();\
+				usuario.exibe();\
+			\}\
+		\} \cf2 else\cf0 \
+			System.\cf3 out\cf0 .println(\cf4 "---> Nenhum usu\'e1rio na Biblioteca"\cf0 );\
+		System.\cf3 out\cf0 .println(\cf4 "<<< Usu\'e1rios >>>"\cf0 );\
+		System.\cf3 out\cf0 .println();\
+	\}\
+\
+	\cf2 private\cf0  \cf2 int\cf0  getNrUnico() \{\
+		\cf5 // \ul Assumo\ulnone  \ul que\ulnone  \ul cada\ulnone  \ul livro\ulnone  \ul recebe\ulnone  \ul um\ulnone  nrUnico \ul diferente\cf0 \ulnone \
+		\cf2 return\cf0  \cf3 _nrUnico\cf0  = \cf3 _nrUnico\cf0  + 1;\
+	\}\
+\
+	\cf2 public\cf0  \cf2 int\cf0  sizeRepositorioLivros() \{\
+		\cf2 return\cf0  \cf3 _repositorioLivros\cf0 .size();\
+	\}\
+\
+	\cf2 public\cf0  \cf2 int\cf0  sizeUsuarios() \{\
+		\cf2 return\cf0  \cf3 _usuarios\cf0 .size();\
+	\}\
+\
+	\cf2 private\cf0  String \cf3 _nome\cf0 ;\
+	\cf2 private\cf0  \cf2 int\cf0  \cf3 _nrUnico\cf0  = 0; \cf5 // _nrUnico > zero!\cf0 \
+	\cf2 private\cf0  TreeSet<Livro> \cf3 _repositorioLivros\cf0 ;\
+	\cf2 private\cf0  HashSet<Usuario> \cf3 _usuarios\cf0 ;\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\cf2 public\cf0  \cf2 class\cf0  Livro \cf2 implements\cf0  Comparable<Object> \{\
+	\cf2 public\cf0  Livro(String titulo, String autor) \{\
+		setTitulo(titulo);\
+		setAutor(autor);\
+		\cf5 // \ul seta\ulnone  _usuario null: \ul livro\ulnone  \ul est\'e1\ulnone  \ul dispon\'edvel\ulnone  \ul para\ulnone  \ul empr\'e9stimo\ulnone :\cf0 \
+		desanexaUsuarioDoLivro();\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  anexaUsuarioAoLivro(Usuario usuario) \{\
+		\cf3 _usuario\cf0  = usuario;\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  desanexaUsuarioDoLivro() \{\
+		anexaUsuarioAoLivro(\cf2 null\cf0 );\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  exibe() \{\
+		System.\cf3 out\cf0 .println(\cf4 "\\t\\t"\cf0  + \cf4 "T\'edtulo: "\cf0  + \cf4 "\\t\\t"\cf0  + \cf2 this\cf0 .getTitulo());\
+		System.\cf3 out\cf0 .println(\cf4 "\\t\\t"\cf0  + \cf4 "Autor: "\cf0  + \cf4 "\\t\\t\\t"\cf0  + \cf2 this\cf0 .getAutor());\
+		System.\cf3 out\cf0 .println(\cf4 "\\t\\t"\cf0  + \cf4 "Nr. Cat\'e1logo: "\cf0  + \cf4 "\\t\\t"\cf0 \
+				+ \cf2 this\cf0 .getNrCatalogo());\
+		\cf2 if\cf0  (getUsuario() != \cf2 null\cf0 )\
+			System.\cf3 out\cf0 .println(\cf4 "\\t\\t"\cf0  + \cf4 "Quem Emprestou: "\cf0  + \cf4 "\\t"\cf0 \
+					+ \cf2 this\cf0 .getUsuario());\
+		System.\cf3 out\cf0 .println(\cf4 "\\t\\t"\cf0 \
+				+ \cf4 "--------------------------------------------"\cf0 );\
+		System.\cf3 out\cf0 .println();\
+	\}\
+\
+	\cf6 @Override\cf0 \
+	\cf2 public\cf0  \cf2 boolean\cf0  equals(Object obj) \{\
+		\cf2 return\cf0  \cf2 this\cf0 .compareTo(obj) == 0;\
+	\}\
+\
+	\cf6 @Override\cf0 \
+	\cf2 public\cf0  \cf2 int\cf0  compareTo(Object obj) \{\
+		Livro livro = (Livro) obj;\
+		\cf2 int\cf0  livroNrCatalogo = livro.getNrCatalogo();\
+		\cf2 int\cf0  result;\
+		\cf2 if\cf0  (\cf3 _nrCatalogo\cf0  < livroNrCatalogo)\
+			result = -1;\
+		\cf2 else\cf0  \cf2 if\cf0  (\cf3 _nrCatalogo\cf0  == livroNrCatalogo)\
+			result = 0;\
+		\cf2 else\cf0 \
+			result = 1;\
+		\cf2 return\cf0  result;\
+	\}\
+\
+	\cf6 @Override\cf0 \
+	\cf2 public\cf0  \cf2 int\cf0  hashCode() \{\
+		Integer integerNrCatalogo = \cf2 new\cf0  Integer(\cf3 _nrCatalogo\cf0 );\
+		\cf2 return\cf0  integerNrCatalogo.hashCode();\
+	\}\
+\
+	\cf6 @Override\cf0 \
+	\cf2 public\cf0  String toString() \{\
+		\cf2 return\cf0  \cf4 "\\"T\'edtulo: "\cf0  + getTitulo() + \cf4 " \'96 Autor: "\cf0  + getAutor() + \cf4 "\\""\cf0 ;\
+	\}\
+\
+	\cf2 public\cf0  \cf2 int\cf0  getNrCatalogo() \{\
+		\cf2 return\cf0  \cf3 _nrCatalogo\cf0 ;\
+	\}\
+\
+	\cf2 public\cf0  \cf2 void\cf0  setNrCatalogo(\cf2 int\cf0  nrCatalogo) \{\
+		\cf3 _nrCatalogo\cf0  = nrCatalogo;\
+	\}\
+\
+	\cf2 public\cf0  String getTitulo() \{\
+		\cf2 return\cf0  \cf3 _titulo\cf0 ;\
+	\}\
+\
+	\cf2 protected\cf0  \cf2 void\cf0  setTitulo(String titulo) \{\
+		\cf3 _titulo\cf0  = titulo;\
+	\}\
+\
+	\cf2 public\cf0  Usuario getUsuario() \{\
+		\cf2 return\cf0  \cf3 _usuario\cf0 ;\
+	\}\
+\
+	\cf2 public\cf0  String getAutor() \{\
+		\cf2 return\cf0  \cf3 _autor\cf0 ;\
+	\}\
+\
+	\cf2 protected\cf0  \cf2 void\cf0  setAutor(String autor) \{\
+		\cf3 _autor\cf0  = autor;\
+	\}\
+\
+	\cf2 private\cf0  \cf2 int\cf0  \cf3 _nrCatalogo\cf0 ;\
+	\cf2 private\cf0  String \cf3 _titulo\cf0 ;\
+	\cf2 private\cf0  String \cf3 _autor\cf0 ;\
+	\cf5 // \ul Se\ulnone  _usuario \ul n\'e3o\ulnone  null: \ul livro\ulnone  \ul est\'e1\ulnone  \ul dispon\'edvel\ulnone  \ul para\ulnone  \ul empr\'e9stimo\cf0 \ulnone \
+	\cf5 // \ul Se\ulnone  _usuario null: \ul livro\ulnone  \ul est\'e1\ulnone  \ul emprestado\ulnone !\cf0 \
+	\cf2 private\cf0  Usuario \cf3 _usuario\cf0 ;\
+\}\
+\
+import java.util.Iterator;\
+import java.util.LinkedList;\
+\
+public class Usuario implements Comparable<Object> \{\
+	public Usuario(String nome) \{\
+		setNome(nome);\
+		_livros = new LinkedList<Livro>();\
+	\}\
+\
+	public void anexaLivroAoUsuario(Livro livro) \{\
+		_livros.add(livro);\
+	\}\
+\
+	public void desanexaLivroDoUsuario(Livro livro) \{\
+		_livros.remove(livro);\
+	\}\
+\
+	public void exibe() \{\
+		System.out.println("\\t\\t" + "Nome: " + "\\t\\t" + getNome());\
+		this.exibeLivrosUsuario();\
+	\}\
+\
+	private void exibeLivrosUsuario() \{\
+		System.out.println("\\t\\t" + "\\\\//Livros emprestados:");\
+		if (_livros.size() != 0) \{\
+			Iterator<Livro> iter = _livros.iterator();\
+			while (iter.hasNext() == true) \{\
+				Livro livro = (Livro) iter.next();\
+				System.out.println("\\t\\t\\t" + livro.getNrCatalogo() + " "\
+						+ livro);\
+			\}\
+		\} else\
+			System.out.println("\\t\\t" + "---> Nenhum livro emprestado");\
+		System.out.println("\\t\\t" + "\\\\///\\\\///\\\\///");\
+		System.out.println();\
+	\}\
+\
+	@Override\
+	public boolean equals(Object obj) \{\
+		return this.compareTo(obj) == 0;\
+\
+	\}\
+\
+	@Override\
+	public int compareTo(Object obj) \{\
+		Usuario usuario = (Usuario) obj;\
+		String nome = usuario.getNome();\
+		return _nome.compareTo(nome);\
+	\}\
+\
+	@Override\
+	public int hashCode() \{\
+		return _nome.hashCode();\
+	\}\
+\
+	@Override\
+	public String toString() \{\
+		return "\\"" + getNome() + "\\"";\
+	\}\
+\
+	public String getNome() \{\
+		return _nome;\
+	\}\
+\
+	protected void setNome(String _nome) \{\
+		this._nome = _nome;\
+	\}\
+\
+	protected LinkedList<Livro> getLivros() \{\
+		return _livros;\
+	\}\
+\
+	private String _nome;\
+	private LinkedList<Livro> _livros;\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  AdicionarLivroInexistenteException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  AdicionarLivroInexistenteException() \{\}\
+\
+    \cf2 public\cf0  AdicionarLivroInexistenteException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  BuscaUsuarioComNomeNuloException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  BuscaUsuarioComNomeNuloException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  BuscaUsuarioComNomeVazioException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  BuscaUsuarioComNomeVazioException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  DevolveLivroDisponivelParaEmprestimoException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  DevolveLivroDisponivelParaEmprestimoException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  DevolveLivroNuloParaEmprestimoException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  DevolveLivroNuloParaEmprestimoException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  LivroIndisponivelParaEmprestimoException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  LivroIndisponivelParaEmprestimoException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  LivroOuUsuarioNulosException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  LivroOuUsuarioNulosException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  TituloOuAutorNuloException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  TituloOuAutorNuloException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  TituloOuAutorVazioException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  TituloOuAutorVazioException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  UsuarioComNomeVazioException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  UsuarioComNomeVazioException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  UsuarioInexistenteException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  UsuarioInexistenteException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+\
+\cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\pard\pardeftab720
+\cf6 @SuppressWarnings\cf0 (\cf4 "serial"\cf0 )\
+\pard\pardeftab720
+\cf2 public\cf0  \cf2 class\cf0  UsuarioJaRegistradoException \cf2 extends\cf0  Exception \{\
+	\cf2 public\cf0  UsuarioJaRegistradoException(String message)\
+    \{\
+       \cf2 super\cf0 (message);\
+    \}\
+\}\
+-- ---  ----\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\b\fs24 \cf0 C\'f3digo de Teste da Vers\'e3o Preliminar\ul \
+\
+\pard\pardeftab720
+
+\f1\b0\fs22 \cf2 \ulnone package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\cf2 import\cf0  \cf2 static\cf0  org.junit.Assert.assertEquals;\
+\
+\cf2 import\cf0  org.junit.BeforeClass;\
+\cf2 import\cf0  org.junit.Test;\
+\
+\cf2 public\cf0  \cf2 class\cf0  BibliotecaTestContextoInicial \{\
+	\cf6 @BeforeClass\cf0 \
+	\cf2 public\cf0  \cf2 static\cf0  \cf2 void\cf0  SetUp() \{\
+		\cf3 biblioteca\cf0  = \cf2 new\cf0  Biblioteca(\cf4 "ITA"\cf0 );\
+	\}\
+\
+	\cf5 /*\cf0 \
+\cf5 	 * @Test public void\cf0 \
+\cf5 	 * whenSitua\'e7\'e3oInicialEntaoListasLivrosDisponiveisAndEmprestadosSaoVazias()\cf0 \
+\cf5 	 * \{ // T1 // \ul Testa\ulnone  \ul condi\'e7\'f5es\ulnone  \ul de\ulnone  \ul in\'edcio\ulnone ! assertEquals(0,\cf0 \
+\cf5 	 * biblioteca.sizeRepositorioLivros()); assertEquals(0,\cf0 \
+\cf5 	 * biblioteca.sizeUsuarios()); \}\cf0 \
+\cf5 	 */\cf0 \
+\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenAdicionoUmLivroEntaoIncrementaTamListaLivrosDisponiveisDeUm()\
+			\cf2 throws\cf0  AdicionarLivroInexistenteException \{ \cf5 // T2--T4\cf0 \
+		\cf2 int\cf0  tam = \cf3 biblioteca\cf0 .sizeRepositorioLivros();\
+		Livro livro1 = \cf2 new\cf0  Livro(\cf4 "Java Design Patterns"\cf0 , \cf4 "Pankaj Kumar"\cf0 ); \cf5 // T2\cf0 \
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(livro1);\
+		assertEquals(tam + 1, \cf3 biblioteca\cf0 .sizeRepositorioLivros());\
+\
+		Livro livro2 = \cf2 new\cf0  Livro(\cf4 "Clojure"\cf0 , \cf4 "Sally Fields"\cf0 ); \cf5 // T3\cf0 \
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(livro2);\
+		assertEquals(tam + 2, \cf3 biblioteca\cf0 .sizeRepositorioLivros());\
+\
+		Livro livro3 = \cf2 new\cf0  Livro(\cf4 "Using CRC Cards"\cf0 , \cf4 "Nancy Wilkinson"\cf0 ); \cf5 // T4\cf0 \
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(livro3);\
+		assertEquals(tam + 3, \cf3 biblioteca\cf0 .sizeRepositorioLivros());\
+	\}\
+\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenAdicionoOutroLivroComMesmoTituloEAutorEntaoIncrementaTamListaLivrosDisponiveisDeUm()\
+			\cf2 throws\cf0  AdicionarLivroInexistenteException \{\
+		\cf5 // T5\cf0 \
+		\cf2 int\cf0  tam = \cf3 biblioteca\cf0 .sizeRepositorioLivros();\
+		Livro livro4 = \cf2 new\cf0  Livro(\cf4 "Using CRC Cards"\cf0 , \cf4 "Nancy Wilkinson"\cf0 );\
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(livro4);\
+		assertEquals(tam + 1, \cf3 biblioteca\cf0 .sizeRepositorioLivros());\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = AdicionarLivroInexistenteException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenAdicionoLivroNuloEntaoAdicionarLivroInexistenteExceptionEhLancada()\
+			\cf2 throws\cf0  AdicionarLivroInexistenteException \{\
+		\cf5 // T6\cf0 \
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(\cf2 null\cf0 );\
+	\}\
+\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenAdicionoUmUsuarioEntaoIncrementaTamListaUsuariosDeUm()\
+			\cf2 throws\cf0  UsuarioJaRegistradoException, UsuarioComNomeVazioException,\
+			UsuarioInexistenteException \{ \cf5 // T7--T9\cf0 \
+		\cf5 // T7: \ul Cria\ulnone  1 \ul usu\'e1rio\ulnone  \ul novo\cf0 \ulnone \
+		\cf2 int\cf0  tam = \cf3 biblioteca\cf0 .sizeUsuarios();\
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Jos\'e9"\cf0 );\
+		assertEquals(tam + 1, \cf3 biblioteca\cf0 .sizeUsuarios());\
+\
+		\cf5 // T8: \ul Cria\ulnone  \ul segundo\ulnone  \ul usu\'e1rio\ulnone  \ul novo\cf0 \ulnone \
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Jo\'e3o"\cf0 );\
+		assertEquals(tam + 2, \cf3 biblioteca\cf0 .sizeUsuarios());\
+\
+		\cf5 // T9: \ul Cria\ulnone  \ul terceiro\ulnone  \ul usu\'e1rio\ulnone  \ul novo\cf0 \ulnone \
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Joaquim"\cf0 );\
+		assertEquals(tam + 3, \cf3 biblioteca\cf0 .sizeUsuarios());\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = UsuarioJaRegistradoException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenAdicionoUsuarioJaExistenteEntaoUsuarioJaRegistradoExceptionEhLancada()\
+			\cf2 throws\cf0  UsuarioJaRegistradoException, UsuarioComNomeVazioException,\
+			UsuarioInexistenteException \{\
+		\cf5 // T10\cf0 \
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Joaquim"\cf0 );\
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Joaquim"\cf0 );\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = UsuarioComNomeVazioException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenAdicionoUsuarioComNomeVazioEntaoUsuarioComNomeVazioExceptionEhLancada()\
+			\cf2 throws\cf0  UsuarioJaRegistradoException, UsuarioComNomeVazioException,\
+			UsuarioInexistenteException \{\
+		\cf5 // T11\cf0 \
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 ""\cf0 );\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = UsuarioInexistenteException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenAdicionoUsuarioInexistenteEntaoUsuarioInexistenteExceptionEhLancada()\
+			\cf2 throws\cf0  UsuarioJaRegistradoException, UsuarioComNomeVazioException,\
+			UsuarioInexistenteException \{\
+		\cf5 // T12\cf0 \
+		\cf3 biblioteca\cf0 .registraUsuario(\cf2 null\cf0 );\
+	\}\
+\
+	\cf2 private\cf0  \cf2 static\cf0  Biblioteca \cf3 biblioteca\cf0 ;\
+\}
+\f0\fs24 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 -- ---  ----\
+\
+\
+\pard\pardeftab720
+
+\f1\fs22 \cf2 package\cf0  pSABbyCRC_UnitTestingSuite;\
+\
+\cf2 import\cf0  \cf2 static\cf0  org.junit.Assert.assertEquals;\
+\
+\cf2 import\cf0  org.junit.Before;\
+\cf2 import\cf0  org.junit.Test;\
+\
+\cf2 public\cf0  \cf2 class\cf0  BibliotecaTest \{\
+	\cf6 @Before\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  SetUp() \
+			\cf2 throws\cf0  AdicionarLivroInexistenteException, UsuarioJaRegistradoException, UsuarioComNomeVazioException,\
+			UsuarioInexistenteException, BuscaUsuarioComNomeVazioException,\
+			BuscaUsuarioComNomeNuloException \{\
+		\cf3 biblioteca\cf0  = \cf2 new\cf0  Biblioteca(\cf4 "ITA"\cf0 );\
+		\cf3 livro1\cf0  = \cf2 new\cf0  Livro(\cf4 "Java Design Patterns"\cf0 , \cf4 "Pankaj Kumar"\cf0 );\
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(\cf3 livro1\cf0 );\
+\
+		\cf3 livro2\cf0  = \cf2 new\cf0  Livro(\cf4 "Clojure"\cf0 , \cf4 "Sally Fields"\cf0 );\
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(\cf3 livro2\cf0 );\
+\
+		\cf3 livro3\cf0  = \cf2 new\cf0  Livro(\cf4 "Using CRC Cards"\cf0 , \cf4 "Nancy Wilkinson"\cf0 );\
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(\cf3 livro3\cf0 );\
+\
+		\cf3 livro4\cf0  = \cf2 new\cf0  Livro(\cf4 "Using CRC Cards"\cf0 , \cf4 "Nancy Wilkinson"\cf0 );\
+		\cf3 biblioteca\cf0 .adicionaLivroCatalogo(\cf3 livro4\cf0 );\
+\
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Jos\'e9"\cf0 );\
+		\cf3 usuario1\cf0  = \cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 "Jos\'e9"\cf0 );\
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Jo\'e3o"\cf0 );\
+		\cf3 usuario2\cf0  = \cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 "Jo\'e3o"\cf0 );\
+		\cf3 biblioteca\cf0 .registraUsuario(\cf4 "Joaquim"\cf0 );\
+		\cf3 usuario3\cf0  = \cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 "Joaquim"\cf0 );\
+	\}\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenEmprestoUmLivroAUsuarioEntaoLivroFicaIndispon\'edvelParaEmprestimo()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException \{ \
+		\cf5 // T13: \ul Empresta\ulnone  \ul um\ulnone  \ul livro\ulnone : \ul Livro\ulnone  "\ul Clojure\ulnone \'96\'96Sally Fields" \ul para\ulnone  \ul Usuario\ulnone  "\ul Jos\'e9\ulnone ");\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro2\cf0 , \cf3 usuario1\cf0 );\
+		assertEquals(\cf3 usuario1\cf0 , \cf3 livro2\cf0 .getUsuario());\
+		\
+		\cf5 // T14: \ul Empresta\ulnone  \ul outro\ulnone  \ul livro\ulnone : \ul Livro\ulnone  "Using CRC Cards\'96\'96\ul Nancy\ulnone  \ul Wilkinson\ulnone " \ul para\ulnone  \ul Usuario\ulnone  "\ul Jo\'e3o\ulnone ");\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro3\cf0 , \cf3 usuario2\cf0 );\
+		assertEquals(\cf3 usuario2\cf0 , \cf3 livro3\cf0 .getUsuario());\
+	\}\
+	\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenDevolvoUmLivroAUsuarioEntaoLivroFicaDispon\'edvelParaEmprestimo()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException,\
+			DevolveLivroDisponivelParaEmprestimoException, DevolveLivroNuloParaEmprestimoException \{ \
+		\cf5 // T15: \ul Devolve\ulnone  \ul um\ulnone  \ul livro\ulnone : \ul Livro\ulnone  "Using CRC Cards\'96\'96\ul Nancy\ulnone  \ul Wilkinson\ulnone " \ul de\ulnone  \ul Usuario\ulnone  "\ul Jo\'e3o\ulnone ");\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro3\cf0 , \cf3 usuario2\cf0 );\
+		\cf3 biblioteca\cf0 .devolveLivro(\cf3 livro3\cf0 );\
+		assertEquals(\cf2 null\cf0 , \cf3 livro3\cf0 .getUsuario());\
+	\}\
+\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenEmprestoTresLivrosAUmUnicosuarioEntaoListaLivrosdoUsuarioTemTam3()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException,LivroOuUsuarioNulosException \{ \
+		\cf5 // T16: 3 \ul livros\ulnone  \ul emprestados\ulnone  \ul ao\ulnone  \ul mesmo\ulnone  \ul usuario\ulnone "\cf0 \
+		\cf5 // 3 \ul Livros\ulnone : Java Design Patterns\'96\'96\ul Pankaj\ulnone  \ul Kumar\ulnone " +\cf0 \
+				 \cf5 // "\\n\\t\\tUsing CRC Cards\'96\'96\ul Nancy\ulnone  \ul Wilkinson\ulnone " + \cf0 \
+				 \cf5 // "\\n\\t\\tUsing CRC Cards\'96\'96\ul Nancy\ulnone  \ul Wilkinson\ulnone " + "\\n\\t\\\ul tpara\ulnone  \ul Usuario\ulnone  \ul Joaquim\ulnone ");\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro1\cf0 , \cf3 usuario3\cf0 );\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro3\cf0 , \cf3 usuario3\cf0 );\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro4\cf0 , \cf3 usuario3\cf0 );\
+		assertEquals(3, (\cf3 usuario3\cf0 .getLivros()).size());\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = LivroIndisponivelParaEmprestimoException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenEmprestoLivroJahEmprestadoEntaoLivroDisponivelParaEmprestimoExceptionEhLancada()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException \{ \
+		\cf5 // T17: \ul Empresta\ulnone  \ul um\ulnone  \ul livro\ulnone  \ul j\'e1\ulnone  \ul emprestado\ulnone "\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro2\cf0 , \cf3 usuario1\cf0 );\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro1\cf0 , \cf3 usuario3\cf0 );\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro3\cf0 , \cf3 usuario3\cf0 );\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro4\cf0 , \cf3 usuario3\cf0 );\
+		\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro2\cf0 , \cf3 usuario3\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = LivroOuUsuarioNulosException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenEmprestoLivroNuloAUsuarioNaoNuloEntaoLivroOuUsuarioNulosExceptionEhLancada()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException \{ \
+		\cf5 // T18a: \ul Empresta\ulnone  \ul livro\ulnone  \ul nulo\ulnone  a \ul usuario\ulnone  \ul n\'e3o\ulnone  \ul nulo\ulnone "\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf2 null\cf0 , \cf3 usuario2\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = LivroOuUsuarioNulosException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenEmprestoLivroNaoNuloAUsuarioNuloEntaoLivroOuUsuarioNulosExceptionEhLancada()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException \{ \
+		\cf5 // T18b: \ul Empresta\ulnone  \ul livro\ulnone  \ul n\'e3o\ulnone  \ul nulo\ulnone  a \ul usuario\ulnone  \ul nulo\ulnone "\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro4\cf0 , \cf2 null\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = LivroOuUsuarioNulosException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenEmprestoLivroNuloAUsuarioNuloEntaoLivroOuUsuarioNulosExceptionEhLancada()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException \{ \
+		\cf5 // T18c: \ul Empresta\ulnone  \ul livro\ulnone  \ul nulo\ulnone  a \ul usuario\ulnone  \ul nulo\ulnone "\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf2 null\cf0 , \cf2 null\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = DevolveLivroDisponivelParaEmprestimoException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenDevolvoLivroDisponivelParaEmprestimoEntaoDevolveLivroDisponivelParaEmprestimoExceptionEhLancada()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException,\
+			DevolveLivroDisponivelParaEmprestimoException, DevolveLivroNuloParaEmprestimoException \{ \
+		\cf5 // T19: \ul Devolve\ulnone  \ul um\ulnone  \ul livro\ulnone  \ul que\ulnone  \ul est\'e1\ulnone  \ul dispon\'edvel\ulnone  \ul para\ulnone  \ul empr\'e9stimo\ulnone : "Java Design Patterns\'96\'96\ul Pankaj\ulnone  \ul Kumar\ulnone "\cf0 \
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro2\cf0 , \cf3 usuario1\cf0 );\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro3\cf0 , \cf3 usuario3\cf0 );\
+		\cf3 biblioteca\cf0 .emprestaLivro(\cf3 livro4\cf0 , \cf3 usuario3\cf0 );\
+		\cf3 biblioteca\cf0 .devolveLivro(\cf3 livro1\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = DevolveLivroNuloParaEmprestimoException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenDevolvoLivroNuloParaEmprestimoEntaoDevolveLivroNuloParaEmprestimoExceptionEhLancada()\
+			\cf2 throws\cf0  LivroIndisponivelParaEmprestimoException, LivroOuUsuarioNulosException,\
+			DevolveLivroDisponivelParaEmprestimoException, DevolveLivroNuloParaEmprestimoException \{ \
+		\cf5 // T20: \ul Devolve\ulnone  \ul um\ulnone  \ul livro\ulnone  \ul nulo\ulnone "\cf0 \
+		\cf3 biblioteca\cf0 .devolveLivro(\cf2 null\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPeloNrCatalogoEntaoRetornoLivroCujoNrCatalogoConfere() \{\
+		\cf5 // T21: \ul Busca\ulnone  \ul livro\ulnone  \ul por\ulnone  NrCatalogo \ul existente\cf0 \ulnone \
+		\cf5 // \ul Livro\ulnone  2: "\ul Clojure\ulnone \'96\'96Sally Fields"\cf0 \
+		Livro livro = \cf3 biblioteca\cf0 .buscaLivroPorNrCatalogo(2);\
+		assertEquals(2, livro.getNrCatalogo());\
+	\}\
+	\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPeloNrCatalogoInexistenteEntaoLivroEhNulo() \{\
+		\cf5 // T22: \ul Busca\ulnone  \ul livro\ulnone  \ul por\ulnone  NrCatalogo \ul inexistente\ulnone : 0 e 5\cf0 \
+		Livro livroHum = \cf3 biblioteca\cf0 .buscaLivroPorNrCatalogo(0);\
+		Livro livroDois = \cf3 biblioteca\cf0 .buscaLivroPorNrCatalogo(5);\
+		assertEquals(\cf2 null\cf0 , livroHum);\
+		assertEquals(\cf2 null\cf0 , livroDois);\
+	\}\
+	\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloEAutorEntaoRetornoLivroCujoTituloEAutorConfere()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T23: \ul Busca\ulnone  \ul livro\ulnone  \ul por\ulnone  \ul Titulo\ulnone  e \ul Autor\ulnone  \ul existente\ulnone : \ul livros\ulnone  1 e 3\cf0 \
+		Livro livroTres = \cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 "Using CRC Cards"\cf0 , \cf4 "Nancy Wilkinson"\cf0 );\
+		assertEquals(3, livroTres.getNrCatalogo());\
+\
+		Livro livroHum = \cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 "Java Design Patterns"\cf0 , \cf4 "Pankaj Kumar"\cf0 );\
+		assertEquals(1, livroHum.getNrCatalogo());\
+	\}\
+	\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloOuAutorENaoEncontroEntaoRetornoLivroNulo()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T24: \ul Busca\ulnone  \ul livro\ulnone  \ul por\ulnone  \ul Titulo\ulnone  e \ul Autor\ulnone  e \ul n\'e3o\ulnone  encontra\cf0 \
+		Livro livro = \cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 "Using CRC Cards"\cf0 , \cf4 "Pankaj Kumar"\cf0 );\
+		assertEquals(\cf2 null\cf0 , livro);\
+\
+		livro = \cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 "Padr\'f5es de Projeto em Java"\cf0 , \cf4 "Pankaj Kumar"\cf0 );\
+		assertEquals(\cf2 null\cf0 , livro);\
+\
+		livro = \cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 "Padr\'f5es de Projeto em Java"\cf0 , \cf4 "Eduardo Guerra"\cf0 );\
+		assertEquals(\cf2 null\cf0 , livro);\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = TituloOuAutorVazioException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloNaoVazioEAutorVazioEntaoTituloOuAutorVazioExceptionEhLancada()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T25a: Busca livro por Titulo n\'e3o vazio e Autor vazio\cf0 \
+		\cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 "Using CRC Cards"\cf0 , \cf4 ""\cf0 );\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = TituloOuAutorVazioException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloVazioEAutorNaoVazioEntaoTituloOuAutorVazioExceptionEhLancada()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T25b: Busca livro por Titulo vazio e Autor n\'e3o vazio\cf0 \
+		\cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 ""\cf0 , \cf4 "Nancy Wilkinson"\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = TituloOuAutorVazioException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloVazioEAutorVazioEntaoTituloOuAutorVazioExceptionEhLancada()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T25c: Busca livro por Titulo vazio e Autor vazio\cf0 \
+		\cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 ""\cf0 , \cf4 ""\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = TituloOuAutorNuloException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloNaoNuloEAutorNuloEntaoTituloOuAutorVazioExceptionEhLancada()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T26a: Busca livro por Titulo n\'e3o nulo e Autor nulo\cf0 \
+		\cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf4 "Using CRC Cards"\cf0 , \cf2 null\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 (expected = TituloOuAutorNuloException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloNuloEAutorNaoNuloEntaoTituloOuAutorVazioExceptionEhLancada()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T26b: Busca livro por Titulo nulo e Autor n\'e3o nulo\cf0 \
+		\cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf2 null\cf0 , \cf4 "Nancy Wilkinson"\cf0 );\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = TituloOuAutorNuloException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoLivroPorTituloNuloEAutorNuloEntaoTituloOuAutorVazioExceptionEhLancada()\
+			\cf2 throws\cf0  TituloOuAutorVazioException, TituloOuAutorNuloException \{\
+		\cf5 // T26c: Busca livro por Titulo nulo e Autor nulo\cf0 \
+		\cf3 biblioteca\cf0 .buscaLivroPorTituloAutor(\cf2 null\cf0 , \cf2 null\cf0 );\
+	\}\
+	\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoUsuarioPorNomeExistenteEntaoRetornoUsuarioValido()\
+			\cf2 throws\cf0  BuscaUsuarioComNomeVazioException, BuscaUsuarioComNomeNuloException \{\
+		\cf5 // T27: Busca usuario por Nome existente\cf0 \
+		Usuario usuario = \cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 "Jos\'e9"\cf0 );\
+		assertEquals(\cf4 "Jos\'e9"\cf0 , usuario.getNome());\
+\
+		usuario = \cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 "Joaquim"\cf0 );\
+		assertEquals(\cf4 "Joaquim"\cf0 , usuario.getNome());\
+	\}\
+	\
+	\cf6 @Test\cf0 \
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoUsuarioPorNomeInexistenteEntaoRetornoUsuarioNulo()\
+			\cf2 throws\cf0  BuscaUsuarioComNomeVazioException, BuscaUsuarioComNomeNuloException \{\
+		\cf5 // T28: Busca usuario por Nome inexistente\cf0 \
+		Usuario usuario = \cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 "Eduardo"\cf0 );\
+		assertEquals(\cf2 null\cf0 , usuario);\
+\
+		usuario = \cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 "Clovis"\cf0 );\
+		assertEquals(\cf2 null\cf0 , usuario);\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = BuscaUsuarioComNomeVazioException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoUsuarioPorNomeVazioEntaoBuscaUsuarioComNomeVazioExceptionEhLancada()\
+			\cf2 throws\cf0  BuscaUsuarioComNomeVazioException, BuscaUsuarioComNomeNuloException \{\
+		\cf5 // T29: Busca usuario por Nome vazio\cf0 \
+		\cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf4 ""\cf0 );\
+	\}\
+\
+	\cf6 @Test\cf0 (expected = BuscaUsuarioComNomeNuloException.\cf2 class\cf0 )\
+	\cf2 public\cf0  \cf2 void\cf0  whenBuscoUsuarioPorNomeNuloEntaoBuscaUsuarioComNomeNuloExceptionEhLancada()\
+			\cf2 throws\cf0  BuscaUsuarioComNomeVazioException, BuscaUsuarioComNomeNuloException \{\
+		\cf5 // T29: Busca usuario por Nome vazio\cf0 \
+		\cf3 biblioteca\cf0 .buscaUsuarioPorNome(\cf2 null\cf0 );\
+	\}\
+	\
+	\cf2 private\cf0  Biblioteca \cf3 biblioteca\cf0 ;\
+	\cf2 private\cf0  Livro \cf3 livro1\cf0 , \cf3 livro2\cf0 , \cf3 livro3\cf0 , \cf3 livro4\cf0 ;\
+	\cf2 private\cf0  Usuario \cf3 usuario1\cf0 , \cf3 usuario2\cf0 , \cf3 usuario3\cf0 ;\
+\}
+\f0\fs24 \ul \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \ulnone -- ---  ----\
+\
+package pSABbyCRC_UnitTestingSuite;\
+\
+import static org.junit.Assert.assertEquals;\
+\
+import org.junit.Before;\
+import org.junit.Test;\
+\
+public class LivroTest \{\
+	@Before\
+	public void SetUp() \{\
+		livro = new Livro("Java Design Patterns", "Pankaj Kumar");\
+	\}\
+\
+	@Test\
+	public void whenSitua\'e7\'e3oInicialEntaoLivroDisponivelParaEmprestimo() \{\
+		// T1: Testa condi\'e7\'f5es de in\'edcio!\
+		// Assumo que Biblioteca n\'e3o deixa criar livro com\
+		// titulo e/ou autor com nomes vazios ou nulos!\
+		assertEquals(null, livro.getUsuario());\
+		assertEquals("Java Design Patterns", livro.getTitulo());\
+		assertEquals("Pankaj Kumar", livro.getAutor());\
+	\}\
+\
+	@Test\
+	public void whenAnexaUsuarioNaoNuloAoLivroEntaoLivroFicaIndisponivelParaEmprestimo() \{\
+		// T2: Anexa usuario n\'e3o nulo\
+		Usuario usuario1 = new Usuario("Jos\'e9");\
+		livro.anexaUsuarioAoLivro(usuario1);\
+		assertEquals(usuario1, livro.getUsuario());\
+	\}\
+\
+	@Test\
+	public void whenAnexaUsuarioNuloAoLivroEntaoLivroFicaDisponivelParaEmprestimo() \{\
+		// T3: Anexa usuario nulo\
+		Usuario usuario1 = null;\
+		livro.anexaUsuarioAoLivro(usuario1);\
+		assertEquals(usuario1, livro.getUsuario());\
+	\}\
+\
+	@Test\
+	public void whenDesanexaUsuarioNaoNuloDoLivroEntaoLivroFicaDisponivelParaEmprestimo() \{\
+		// T4: Desanexa usuario n\'e3o nulo\
+		Usuario usuario1 = new Usuario("Jos\'e9");\
+		livro.anexaUsuarioAoLivro(usuario1);\
+		livro.desanexaUsuarioDoLivro();\
+		assertEquals(null, livro.getUsuario());\
+	\}\
+\
+	@Test\
+	public void whenDesanexaUsuarioNuloDoLivroEntaoLivroContinuaDisponivelParaEmprestimo() \{\
+		// T5: Desanexa usuario nulo\
+		Usuario usuario1 = null;\
+		livro.anexaUsuarioAoLivro(usuario1);\
+		livro.desanexaUsuarioDoLivro();\
+		assertEquals(null, livro.getUsuario());\
+	\}\
+\
+	private Livro livro;\
+\}\
+-- ---  ----\
+\
+package pSABbyCRC_UnitTestingSuite;\
+\
+import java.util.Iterator;\
+import java.util.LinkedList;\
+\
+public class Usuario implements Comparable<Object> \{\
+	public Usuario(String nome) \{\
+		setNome(nome);\
+		_livros = new LinkedList<Livro>();\
+	\}\
+\
+	public void anexaLivroAoUsuario(Livro livro) \{\
+		if (livro != null)\
+			_livros.add(livro);\
+	\}\
+\
+	public void desanexaLivroDoUsuario(Livro livro) \{\
+		//if (livro != null)\
+			_livros.remove(livro);\
+	\}\
+\
+	public void exibe() \{\
+		System.out.println("\\t\\t" + "Nome: " + "\\t\\t" + getNome());\
+		this.exibeLivrosUsuario();\
+	\}\
+\
+	private void exibeLivrosUsuario() \{\
+		System.out.println("\\t\\t" + "\\\\//Livros emprestados:");\
+		if (_livros.size() != 0) \{\
+			Iterator<Livro> iter = _livros.iterator();\
+			while (iter.hasNext() == true) \{\
+				Livro livro = (Livro) iter.next();\
+				System.out.println("\\t\\t\\t" + livro.getNrCatalogo() + " "\
+						+ livro);\
+			\}\
+		\} else\
+			System.out.println("\\t\\t" + "---> Nenhum livro emprestado");\
+		System.out.println("\\t\\t" + "\\\\///\\\\///\\\\///");\
+		System.out.println();\
+	\}\
+\
+	@Override\
+	public boolean equals(Object obj) \{\
+		return this.compareTo(obj) == 0;\
+\
+	\}\
+\
+	@Override\
+	public int compareTo(Object obj) \{\
+		Usuario usuario = (Usuario) obj;\
+		String nome = usuario.getNome();\
+		return _nome.compareTo(nome);\
+	\}\
+\
+	@Override\
+	public int hashCode() \{\
+		return _nome.hashCode();\
+	\}\
+\
+	@Override\
+	public String toString() \{\
+		return "\\"" + getNome() + "\\"";\
+	\}\
+\
+	public String getNome() \{\
+		return _nome;\
+	\}\
+\
+	protected void setNome(String _nome) \{\
+		this._nome = _nome;\
+	\}\
+\
+	protected LinkedList<Livro> getLivros() \{\
+		return _livros;\
+	\}\
+\
+	private String _nome;\
+	private LinkedList<Livro> _livros;\
+\}}
