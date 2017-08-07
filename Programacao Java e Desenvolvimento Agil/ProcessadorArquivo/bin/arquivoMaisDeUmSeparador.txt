@@ -1,0 +1,3 @@
+nome->Gustavo
+sobrenome->Furtado->De->Oliveira->Alves
+idade->26
